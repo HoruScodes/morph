@@ -5,6 +5,7 @@ final class StatusItemController: NSObject, NSPopoverDelegate {
   private let model = Model()
   private let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
   private let popover = NSPopover()
+  private var isDragHovering = false
 
   override init() {
     super.init()
@@ -16,18 +17,20 @@ final class StatusItemController: NSObject, NSPopoverDelegate {
     popover.delegate = self
 
     guard let button = statusItem.button else { return }
-    let image = NSImage(systemSymbolName: "arrow.triangle.2.circlepath", accessibilityDescription: "DropConvert")
-    image?.isTemplate = true
-    button.image = image
-    button.toolTip = "DropConvert"
-    button.setAccessibilityLabel("DropConvert")
+    button.toolTip = "Morph"
+    button.setAccessibilityLabel("Morph")
+    model.onMoodChange = { [weak self] in self?.refreshFace() }
+    refreshFace()
     button.target = self
     button.action = #selector(toggle)
 
     let dropView = DropView(frame: button.bounds)
     dropView.autoresizingMask = [.width, .height]
     dropView.onClick = { [weak button] in button?.performClick(nil) }
-    dropView.onHighlight = { [weak button] on in button?.highlight(on) }
+    dropView.onHighlight = { [weak self] on in
+      self?.isDragHovering = on
+      self?.refreshFace()
+    }
     dropView.onDrop = { [weak self] urls in
       self?.model.load(urls)
       self?.show()
@@ -36,6 +39,10 @@ final class StatusItemController: NSObject, NSPopoverDelegate {
   }
 
   func popoverShouldClose(_ popover: NSPopover) -> Bool { NSApp.modalWindow == nil }
+
+  private func refreshFace() {
+    statusItem.button?.image = Mascot.menuBarImage(isDragHovering ? .hungry : model.mood)
+  }
 
   @objc private func toggle() {
     if popover.isShown { popover.performClose(nil) } else { show() }

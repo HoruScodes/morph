@@ -9,7 +9,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 }
 
 @main
-enum DropConvertApp {
+enum MorphApp {
   static func main() {
     let app = NSApplication.shared
     let delegate = AppDelegate()

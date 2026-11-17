@@ -3,12 +3,12 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 swift build -c release
-binary="$(swift build -c release --show-bin-path)/DropConvert"
+binary="$(swift build -c release --show-bin-path)/Morph"
 
-app="build/DropConvert.app"
+app="build/Morph.app"
 rm -rf "$app"
 mkdir -p "$app/Contents/MacOS" "$app/Contents/Resources"
-cp "$binary" "$app/Contents/MacOS/DropConvert"
+cp "$binary" "$app/Contents/MacOS/Morph"
 cp Resources/AppIcon.icns "$app/Contents/Resources/AppIcon.icns"
 
 cat > "$app/Contents/Info.plist" <<'PLIST'
@@ -16,10 +16,10 @@ cat > "$app/Contents/Info.plist" <<'PLIST'
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-  <key>CFBundleExecutable</key><string>DropConvert</string>
+  <key>CFBundleExecutable</key><string>Morph</string>
   <key>CFBundleIconFile</key><string>AppIcon</string>
-  <key>CFBundleIdentifier</key><string>com.dropconvert.app</string>
-  <key>CFBundleName</key><string>DropConvert</string>
+  <key>CFBundleIdentifier</key><string>com.morph.app</string>
+  <key>CFBundleName</key><string>Morph</string>
   <key>CFBundlePackageType</key><string>APPL</string>
   <key>CFBundleShortVersionString</key><string>0.1.0</string>
   <key>CFBundleVersion</key><string>1</string>

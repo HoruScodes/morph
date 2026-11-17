@@ -1,4 +1,4 @@
-# DropConvert
+# Morph
 
 A small Mac menu-bar app. Drop files on its icon (or into its window) and convert or shrink them.
 Everything happens on your Mac: no accounts, no network, no third-party code.
@@ -17,8 +17,8 @@ produces `photo 2.jpg`.
 Needs macOS 15 or later and the Swift 6.2 toolchain (Command Line Tools are enough).
 
 ```sh
-./scripts/build-app.sh      # builds build/DropConvert.app and ad-hoc signs it
-open build/DropConvert.app
+./scripts/build-app.sh      # builds build/Morph.app and ad-hoc signs it
+open build/Morph.app
 ```
 
 The first launch of an ad-hoc signed app may need right-click, Open.
@@ -37,4 +37,4 @@ The video test needs `ffmpeg` at `/opt/homebrew/bin/ffmpeg` and is skipped witho
 
 - `Sources/ConvertKit` holds the conversion logic. `Action` is the table of what can be done,
   and `convert(_:inputs:progress:)` is the single entry point.
-- `Sources/DropConvert` is the status item and popover.
+- `Sources/Morph` is the status item and popover.

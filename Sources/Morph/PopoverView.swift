@@ -12,13 +12,14 @@ struct PopoverView: View {
         Toggle("Open at login", isOn: Binding(get: { model.opensAtLogin }, set: { model.setOpensAtLogin($0) }))
           .toggleStyle(.checkbox)
         Spacer()
-        Button("Quit DropConvert") { NSApp.terminate(nil) }.buttonStyle(.plain)
+        Button("Quit Morph") { NSApp.terminate(nil) }.buttonStyle(.plain)
       }
       .font(.caption)
       .foregroundStyle(.secondary)
     }
     .padding(16)
     .frame(width: 320)
+    .tint(Color(cgColor: Mascot.violet))
     .dropDestination(for: URL.self) { urls, _ in
       model.load(urls)
       return true
@@ -35,21 +36,29 @@ struct PopoverView: View {
     }
   }
 
+  private func face(_ mood: Mood, side: CGFloat = 72) -> some View {
+    Image(nsImage: Mascot.image(mood, side: side)).accessibilityHidden(true)
+  }
+
   private var empty: some View {
     VStack(spacing: 10) {
-      Image(systemName: "arrow.down.doc").font(.system(size: 34)).foregroundStyle(.secondary)
-      Text("Drop files here").font(.headline)
-      Text("You can also drop them on the menu bar icon. Your files never leave your Mac.")
+      face(.idle)
+      Text(model.greeting).font(.headline)
+      Text("Photos, PDFs and videos. Nothing ever leaves your Mac.")
         .font(.callout).foregroundStyle(.secondary).multilineTextAlignment(.center)
-      Button("Choose files…") { model.chooseFiles() }.controlSize(.large)
+      Button("Choose files…") { model.chooseFiles() }.buttonStyle(.borderedProminent).controlSize(.large)
     }
     .frame(maxWidth: .infinity)
   }
 
   private func ready(_ files: [URL], _ actions: [Action]) -> some View {
     VStack(alignment: .leading, spacing: 10) {
+      HStack(spacing: 10) {
+        face(actions.isEmpty ? .sad : .hungry, side: 36)
+        Text(readyHeadline(files.count, canHelp: !actions.isEmpty)).font(.headline)
+      }
       if files.count > 4 {
-        Label("\(files.count) files", systemImage: "doc.on.doc").font(.headline)
+        Label("\(files.count) files", systemImage: "doc.on.doc")
       } else {
         ForEach(files, id: \.self) { url in
           HStack(spacing: 8) {
@@ -59,7 +68,8 @@ struct PopoverView: View {
         }
       }
       if actions.isEmpty {
-        Text("These files can't be converted together").foregroundStyle(.secondary)
+        Text("Give me one kind at a time: only photos, only PDFs or only videos.")
+          .font(.callout).foregroundStyle(.secondary)
       }
       ForEach(actions) { action in
         Button { model.run(action) } label: {
@@ -73,39 +83,52 @@ struct PopoverView: View {
   }
 
   private func working(_ action: Action, _ progress: Double) -> some View {
-    VStack(alignment: .leading, spacing: 10) {
-      Text("\(action.title)…").font(.headline)
+    VStack(spacing: 10) {
+      face(.busy)
+      Text("Morphing…").font(.headline)
       ProgressView(value: progress)
+      Text(action.title).font(.callout).foregroundStyle(.secondary)
     }
-    .frame(maxWidth: .infinity, alignment: .leading)
+    .frame(maxWidth: .infinity)
   }
 
   private func done(_ result: ConversionResult) -> some View {
     let count = result.outputs.count
     return VStack(spacing: 10) {
-      Image(systemName: "checkmark.circle.fill").font(.system(size: 34)).foregroundStyle(.green)
-      Text(count == 1 ? "Saved 1 file" : "Saved \(count) files").font(.headline)
-      Text(sizeSummary(result)).font(.callout).foregroundStyle(.secondary)
+      face(.happy)
+      Text(doneHeadline(result)).font(.headline)
+      Text("\(count == 1 ? "1 file saved next to the original" : "\(count) files saved next to the originals") · \(sizeSummary(result))")
+        .font(.callout).foregroundStyle(.secondary).multilineTextAlignment(.center)
       Button("Show in Finder") { NSWorkspace.shared.activateFileViewerSelecting(result.outputs) }
-        .controlSize(.large)
-      Button("Convert more") { model.reset() }.buttonStyle(.link).font(.callout)
+        .buttonStyle(.borderedProminent).controlSize(.large)
+      Button("Morph something else") { model.reset() }.buttonStyle(.link).font(.callout)
     }
     .frame(maxWidth: .infinity)
   }
 
   private func failed(_ message: String) -> some View {
     VStack(spacing: 10) {
-      Image(systemName: "exclamationmark.triangle.fill").font(.system(size: 34)).foregroundStyle(.orange)
-      Text(message).multilineTextAlignment(.center)
-      Button("Try again") { model.retry() }.controlSize(.large)
+      face(.sad)
+      Text("Hmm, that didn't work").font(.headline)
+      Text(message).font(.callout).foregroundStyle(.secondary).multilineTextAlignment(.center)
+      Button("Try again") { model.retry() }.buttonStyle(.borderedProminent).controlSize(.large)
     }
     .frame(maxWidth: .infinity)
+  }
+
+  private func readyHeadline(_ count: Int, canHelp: Bool) -> String {
+    guard canHelp else { return "I can't mix these" }
+    return count == 1 ? "What should I do with this?" : "What should I do with these?"
+  }
+
+  private func doneHeadline(_ result: ConversionResult) -> String {
+    guard let saved = result.percentSaved else { return "Ta-da! All done" }
+    return saved >= 50 ? "Ta-da! \(saved)% lighter" : "Done! \(saved)% lighter"
   }
 
   private func sizeSummary(_ result: ConversionResult) -> String {
     let before = ByteCountFormatter.string(fromByteCount: result.inputBytes, countStyle: .file)
     let after = ByteCountFormatter.string(fromByteCount: result.outputBytes, countStyle: .file)
-    let saved = result.percentSaved.map { " · \($0)% smaller" } ?? ""
-    return "\(before) → \(after)\(saved)"
+    return "\(before) → \(after)"
   }
 }

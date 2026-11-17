@@ -10,15 +10,15 @@ public nonisolated enum ConversionError: Error, LocalizedError, Sendable, Equata
   public var errorDescription: String? {
     switch self {
     case .unsupported(let name):
-      "“\(name)” isn't a kind of file DropConvert can use for this."
+      "I can't do that with “\(name)”. Try a photo, a PDF or a video."
     case .unreadable(let name):
-      "DropConvert couldn't open “\(name)”. It may be damaged or locked."
+      "I couldn't open “\(name)”. It may be damaged or locked."
     case .alreadySmall(let name):
-      "“\(name)” is already as small as it gets."
+      "“\(name)” is already as small as it gets. Nothing left to squeeze."
     case .failed(let name):
-      "Something went wrong with “\(name)”. Nothing was saved."
+      "Something went wrong with “\(name)”. I didn't save anything."
     case .notEnoughFiles(let needed):
-      "Choose at least \(needed) files for this."
+      "I need at least \(needed) files for this."
     }
   }
 }

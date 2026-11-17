@@ -2,16 +2,16 @@
 import PackageDescription
 
 let package = Package(
-  name: "DropConvert",
+  name: "Morph",
   platforms: [.macOS(.v15)],
-  products: [.executable(name: "DropConvert", targets: ["DropConvert"])],
+  products: [.executable(name: "Morph", targets: ["Morph"])],
   targets: [
     .target(
       name: "ConvertKit",
       swiftSettings: [.enableUpcomingFeature("NonisolatedNonsendingByDefault")]
     ),
     .executableTarget(
-      name: "DropConvert",
+      name: "Morph",
       dependencies: ["ConvertKit"],
       swiftSettings: [
         .defaultIsolation(MainActor.self),

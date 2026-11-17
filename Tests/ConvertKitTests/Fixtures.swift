@@ -7,11 +7,11 @@ import PDFKit
 import UniformTypeIdentifiers
 
 let ffmpegPath = "/opt/homebrew/bin/ffmpeg"
-let fixtureText = "DropConvert fixture text"
+let fixtureText = "Morph fixture text"
 
 func withSandbox(_ body: (URL) async throws -> Void) async throws {
   let directory = FileManager.default.temporaryDirectory
-    .appendingPathComponent("DropConvertTests-\(UUID().uuidString)", isDirectory: true)
+    .appendingPathComponent("MorphTests-\(UUID().uuidString)", isDirectory: true)
   try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
   defer { try? FileManager.default.removeItem(at: directory) }
   try await body(directory)

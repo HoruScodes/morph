@@ -13,7 +13,24 @@ enum Phase {
 
 @Observable
 final class Model {
-  private(set) var phase: Phase = .empty
+  private(set) var phase: Phase = .empty {
+    didSet { onMoodChange() }
+  }
+  private(set) var greeting = Model.randomGreeting()
+  @ObservationIgnored var onMoodChange: () -> Void = {}
+
+  var mood: Mood {
+    switch phase {
+    case .empty, .ready: .idle
+    case .working: .busy
+    case .done: .happy
+    case .failed: .sad
+    }
+  }
+
+  private static func randomGreeting() -> String {
+    ["Feed me a file", "Got something for me?", "Drop a file on me", "I'm hungry. Files, please"].randomElement() ?? "Feed me a file"
+  }
   private(set) var opensAtLogin = SMAppService.mainApp.status == .enabled
   private var files: [URL] = []
 
@@ -58,6 +75,7 @@ final class Model {
 
   func reset() {
     files = []
+    greeting = Model.randomGreeting()
     phase = .empty
   }
 

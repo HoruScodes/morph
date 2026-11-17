@@ -1,7 +1,7 @@
 import AppKit
 
 let output = URL(fileURLWithPath: CommandLine.arguments[1])
-let iconset = FileManager.default.temporaryDirectory.appendingPathComponent("DropConvert-\(UUID().uuidString).iconset")
+let iconset = FileManager.default.temporaryDirectory.appendingPathComponent("Morph-\(UUID().uuidString).iconset")
 try FileManager.default.createDirectory(at: iconset, withIntermediateDirectories: true)
 
 func render(pixels: Int) -> Data {
@@ -24,16 +24,13 @@ func render(pixels: Int) -> Data {
   shape.fill()
   NSGraphicsContext.restoreGraphicsState()
   NSGradient(
-    starting: NSColor(srgbRed: 0.33, green: 0.62, blue: 1.0, alpha: 1),
-    ending: NSColor(srgbRed: 0.09, green: 0.30, blue: 0.86, alpha: 1)
-  )!.draw(in: shape, angle: -90)
+    starting: NSColor(srgbRed: 0.62, green: 0.45, blue: 1.0, alpha: 1),
+    ending: NSColor(srgbRed: 0.93, green: 0.36, blue: 0.70, alpha: 1)
+  )!.draw(in: shape, angle: -60)
 
-  let configuration = NSImage.SymbolConfiguration(pointSize: 440, weight: .bold)
-    .applying(NSImage.SymbolConfiguration(paletteColors: [.white]))
-  let symbol = NSImage(systemSymbolName: "arrow.triangle.2.circlepath", accessibilityDescription: nil)!
-    .withSymbolConfiguration(configuration)!
-  let size = symbol.size
-  symbol.draw(in: NSRect(x: tile.midX - size.width / 2, y: tile.midY - size.height / 2, width: size.width, height: size.height))
+  Mascot.draw(
+    .idle, in: tile.insetBy(dx: 125, dy: 125), context: NSGraphicsContext.current!.cgContext,
+    body: CGColor(gray: 1, alpha: 1), features: CGColor(srgbRed: 0.36, green: 0.22, blue: 0.80, alpha: 1))
 
   NSGraphicsContext.restoreGraphicsState()
   return rep.representation(using: .png, properties: [:])!
