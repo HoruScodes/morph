@@ -1,0 +1,68 @@
+import AppKit
+import ConvertKit
+import Observation
+
+enum Phase {
+  case empty
+  case ready(files: [URL], actions: [Action])
+  case working(Action, progress: Double)
+  case done(ConversionResult)
+  case failed(String)
+}
+
+@Observable
+final class Model {
+  private(set) var phase: Phase = .empty
+  private var files: [URL] = []
+
+  func load(_ urls: [URL]) {
+    if case .working = phase { return }
+    let dropped = urls.filter(\.isFileURL)
+    guard !dropped.isEmpty else { return }
+    show(dropped)
+  }
+
+  func chooseFiles() {
+    let panel = NSOpenPanel()
+    panel.allowsMultipleSelection = true
+    panel.canChooseDirectories = false
+    guard panel.runModal() == .OK else { return }
+    load(panel.urls)
+  }
+
+  func run(_ action: Action) {
+    guard case .ready(let files, _) = phase else { return }
+    phase = .working(action, progress: 0)
+    Task {
+      do {
+        let result = try await convert(action, inputs: files) { value in
+          Task { @MainActor in self.update(action, progress: value) }
+        }
+        phase = .done(result)
+      } catch {
+        phase = .failed(error.localizedDescription)
+      }
+    }
+  }
+
+  func retry() {
+    if files.isEmpty { reset() } else { show(files) }
+  }
+
+  func reset() {
+    files = []
+    phase = .empty
+  }
+
+  private func show(_ urls: [URL]) {
+    files = urls
+    let kinds = urls.compactMap(FileKind.init(url:))
+    let actions = kinds.count == urls.count ? Action.available(for: kinds) : []
+    phase = .ready(files: urls, actions: actions)
+  }
+
+  private func update(_ action: Action, progress: Double) {
+    guard case .working(let current, _) = phase, current == action else { return }
+    phase = .working(action, progress: progress)
+  }
+}
