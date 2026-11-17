@@ -40,12 +40,17 @@ document.querySelectorAll('[data-demo]').forEach((demo) => {
   const img = demo.querySelector('.demo__screen img');
   const hot = demo.querySelector('.demo__hot');
   const status = demo.querySelector('[role="status"]');
+  const label = demo.querySelector('#tray-label');
+  const chips = [...demo.querySelectorAll('.chip')];
+  let touched = false;
+  const say = (text) => { label.textContent = text; };
+  const focusOn = (el) => { if (touched && el) el.focus({ preventScroll: true }); };
   const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const dir = 'images/app/';
   const kinds = {
-    photo: { shot: 'photo', name: 'Beach day.heic', top: 30.62, gap: 12.375, height: 9.01, actions: [['imageToJPG', 'Convert to JPG'], ['imageToPNG', 'Convert to PNG'], ['shrinkImage', 'Make smaller'], ['imagesToPDF', 'Turn into a PDF']] },
-    pdfs: { shot: 'pdfs', name: 'three PDFs', top: 47.45, gap: 11.41, height: 8.31, actions: [['shrinkPDF', 'Make smaller'], ['mergePDFs', 'Combine into one PDF'], ['pdfToJPG', 'Save pages as JPG']] },
-    video: { shot: 'video', name: 'Birthday.mov', top: 48.7, gap: 0, height: 14.34, actions: [['shrinkVideo', 'Make smaller']] },
+    photo: { shot: 'photo', name: 'Beach day.heic', over: [79.5, 6], top: 30.62, gap: 12.375, height: 9.01, actions: [['imageToJPG', 'Convert to JPG'], ['imageToPNG', 'Convert to PNG'], ['shrinkImage', 'Make smaller'], ['imagesToPDF', 'Turn into a PDF']] },
+    pdfs: { shot: 'pdfs', name: 'three PDFs', over: [81, 6], top: 47.45, gap: 11.41, height: 8.31, actions: [['shrinkPDF', 'Make smaller'], ['mergePDFs', 'Combine into one PDF'], ['pdfToJPG', 'Save pages as JPG']] },
+    video: { shot: 'video', name: 'Birthday.mov', over: [67.5, 9], top: 48.7, gap: 0, height: 14.34, actions: [['shrinkVideo', 'Make smaller']] },
   };
   let timer = 0;
   let mood = 'idle';
@@ -57,8 +62,9 @@ document.querySelectorAll('[data-demo]').forEach((demo) => {
     b.type = 'button';
     b.setAttribute('aria-label', label);
     Object.assign(b.style, { top: `${top}%`, height: `${height}%`, left: `${left}%`, width: `${width}%` });
-    b.addEventListener('click', onPress);
+    b.addEventListener('click', () => { touched = true; onPress(); });
     hot.append(b);
+    return b;
   };
   img.addEventListener('load', () => { hot.style.aspectRatio = `${img.naturalWidth} / ${img.naturalHeight}`; });
 
@@ -67,18 +73,25 @@ document.querySelectorAll('[data-demo]').forEach((demo) => {
     hot.replaceChildren();
     setMood('idle');
     show('empty', 'Morph\u2019s window saying Feed me a file');
+    spot('Choose files', 68.91, 11.62, 32.4, 35.31, () => eat(chips[0], chips[0].dataset.kind, { x: 0, y: 0 }));
+    say('Feed the Morph');
     status.textContent = 'Morph is waiting for a file.';
+    focusOn(chips[0]);
   };
   const finish = (action, title) => {
     setMood('happy');
     show(`done-${action}`, `Morph\u2019s window after ${title}, showing the size before and after`);
-    spot('Morph something else', 72, 9.5, 28, 44, reset);
+    spot('Show in Finder', 60, 12, 31.8, 36.6, () => say('On your Mac this opens the folder with the new file'));
+    const again = spot('Morph something else', 72.5, 9.5, 28, 44, reset);
+    say('Done. Feed it another');
     status.textContent = `Done: ${title}. The new file sits next to the original.`;
+    focusOn(again);
   };
   const run = (action, title) => {
     hot.replaceChildren();
     setMood('busy');
     show(`working-${action}`, `Morph\u2019s window working: ${title}`);
+    say('Morphing\u2026');
     status.textContent = `Morphing: ${title}.`;
     timer = setTimeout(() => finish(action, title), still ? 300 : 1500);
   };
@@ -88,14 +101,19 @@ document.querySelectorAll('[data-demo]').forEach((demo) => {
     hot.replaceChildren();
     setMood('idle');
     show(k.shot, `Morph\u2019s window asking what to do with ${k.name}`);
-    k.actions.forEach(([action, title], i) => spot(title, k.top + i * k.gap, k.height, 5, 89.9, () => run(action, title)));
+    const pitch = k.gap || k.height;
+    const first = k.actions.map(([action, title], i) => spot(title, k.top + i * k.gap - (pitch - k.height) / 2, pitch, 5, 89.9, () => run(action, title)))[0];
+    spot('Start over', k.over[0], k.over[1], 4, 20, reset);
+    say('Now pick a button');
     status.textContent = `Morph asks what to do with ${k.name}. Pick a button.`;
+    focusOn(first);
     k.actions.forEach(([action]) => { new Image().src = `${dir}working-${action}.png`; new Image().src = `${dir}done-${action}.png`; });
   };
 
   let eating = false;
   const eat = (chip, kind, from) => {
     if (eating) return;
+    touched = true;
     if (still) { chip.style.translate = ''; feed(kind); return; }
     eating = true;
     clearTimeout(timer);
@@ -108,6 +126,7 @@ document.querySelectorAll('[data-demo]').forEach((demo) => {
     chip.style.translate = `${dx}px ${dy}px`;
     chip.style.scale = '0.12';
     chip.style.opacity = '0';
+    say('Yum');
     status.textContent = `Morph is eating ${kinds[kind].name}.`;
     setTimeout(() => { face.dataset.mood = 'chew'; }, 340);
     setTimeout(() => {
@@ -127,9 +146,9 @@ document.querySelectorAll('[data-demo]').forEach((demo) => {
     const a = face.getBoundingClientRect(), b = img.getBoundingClientRect();
     return x > Math.min(a.left, b.left) - 24 && x < Math.max(a.right, b.right) + 24 && y > a.top - 24 && y < b.bottom + 24;
   };
-  demo.querySelectorAll('.chip').forEach((chip) => {
+  chips.forEach((chip) => {
     let start = null, dragged = false, resting = 'idle', at = { x: 0, y: 0 };
-    chip.addEventListener('pointerdown', (e) => { start = { x: e.clientX, y: e.clientY }; dragged = false; resting = mood; chip.setPointerCapture(e.pointerId); });
+    chip.addEventListener('pointerdown', (e) => { if (e.pointerType === 'touch') return; start = { x: e.clientX, y: e.clientY }; dragged = false; resting = mood; chip.setPointerCapture(e.pointerId); });
     chip.addEventListener('pointermove', (e) => {
       if (!start) return;
       const dx = e.clientX - start.x, dy = e.clientY - start.y;
