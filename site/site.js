@@ -40,7 +40,6 @@ document.querySelectorAll('[data-demo]').forEach((demo) => {
   const img = demo.querySelector('.demo__screen img');
   const hot = demo.querySelector('.demo__hot');
   const status = demo.querySelector('[role="status"]');
-  const steps = [...demo.querySelectorAll('.steps li')];
   const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const dir = 'images/app/';
   const kinds = {
@@ -53,7 +52,6 @@ document.querySelectorAll('[data-demo]').forEach((demo) => {
 
   const show = (shot, alt) => { img.src = `${dir}${shot}.png`; img.alt = alt; };
   const setMood = (next) => { mood = next; face.dataset.mood = next; };
-  const setStep = (index) => steps.forEach((li, i) => (i === index ? li.setAttribute('aria-current', 'step') : li.removeAttribute('aria-current')));
   const spot = (label, top, height, left, width, onPress) => {
     const b = document.createElement('button');
     b.type = 'button';
@@ -68,7 +66,6 @@ document.querySelectorAll('[data-demo]').forEach((demo) => {
     clearTimeout(timer);
     hot.replaceChildren();
     setMood('idle');
-    setStep(0);
     show('empty', 'Morph\u2019s window saying Feed me a file');
     status.textContent = 'Morph is waiting for a file.';
   };
@@ -81,7 +78,6 @@ document.querySelectorAll('[data-demo]').forEach((demo) => {
   const run = (action, title) => {
     hot.replaceChildren();
     setMood('busy');
-    setStep(2);
     show(`working-${action}`, `Morph\u2019s window working: ${title}`);
     status.textContent = `Morphing: ${title}.`;
     timer = setTimeout(() => finish(action, title), still ? 300 : 1500);
@@ -91,7 +87,6 @@ document.querySelectorAll('[data-demo]').forEach((demo) => {
     clearTimeout(timer);
     hot.replaceChildren();
     setMood('idle');
-    setStep(1);
     show(k.shot, `Morph\u2019s window asking what to do with ${k.name}`);
     k.actions.forEach(([action, title], i) => spot(title, k.top + i * k.gap, k.height, 5, 89.9, () => run(action, title)));
     status.textContent = `Morph asks what to do with ${k.name}. Pick a button.`;
