@@ -9,18 +9,27 @@ nonisolated func openPDF(_ url: URL) throws(ConversionError) -> PDFDocument {
   return document
 }
 
+nonisolated func appendPages(of document: PDFDocument, to target: PDFDocument, name: String) throws(ConversionError) {
+  for pageIndex in 0..<document.pageCount {
+    guard let page = document.page(at: pageIndex)?.copy() as? PDFPage else { throw .unreadable(name) }
+    target.insert(page, at: target.pageCount)
+  }
+}
+
 nonisolated func shrinkPDFs(
   _ inputs: [URL], into outputs: inout OutputSet, progress: @Sendable (Double) -> Void
 ) throws(ConversionError) {
   for (index, url) in inputs.enumerated() {
     let name = url.lastPathComponent
-    let document = try openPDF(url)
+    let rebuilt = PDFDocument()
+    try appendPages(of: try openPDF(url), to: rebuilt, name: name)
     let target = outputs.next(stem: stem(of: url) + " (small)", ext: "pdf")
+    // PDFKit copies an unmodified document byte for byte and ignores these options, so rebuild it first.
     let options: [PDFDocumentWriteOption: Any] = [
       .saveImagesAsJPEGOption: true,
       .optimizeImagesForScreenOption: true,
     ]
-    guard document.write(to: target, withOptions: options) else { throw .failed(name) }
+    guard rebuilt.write(to: target, withOptions: options) else { throw .failed(name) }
     guard fileSize(target) < fileSize(url) else { throw .alreadySmall(name) }
     progress(Double(index + 1) / Double(inputs.count))
   }
@@ -31,13 +40,7 @@ nonisolated func mergePDFs(
 ) throws(ConversionError) {
   let merged = PDFDocument()
   for (index, url) in inputs.enumerated() {
-    let document = try openPDF(url)
-    for pageIndex in 0..<document.pageCount {
-      guard let page = document.page(at: pageIndex)?.copy() as? PDFPage else {
-        throw .unreadable(url.lastPathComponent)
-      }
-      merged.insert(page, at: merged.pageCount)
-    }
+    try appendPages(of: try openPDF(url), to: merged, name: url.lastPathComponent)
     progress(Double(index + 1) / Double(inputs.count))
   }
   let first = inputs[0]
