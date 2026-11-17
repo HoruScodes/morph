@@ -19,7 +19,7 @@ struct PopoverView: View {
     }
     .padding(16)
     .frame(width: 320)
-    .tint(Color(cgColor: Mascot.violet))
+    .tint(Color(red: 0.42, green: 0.29, blue: 0.90))
     .dropDestination(for: URL.self) { urls, _ in
       model.load(urls)
       return true
@@ -73,8 +73,9 @@ struct PopoverView: View {
       }
       ForEach(actions) { action in
         Button { model.run(action) } label: {
-          Text(action.title).frame(maxWidth: .infinity)
+          Text(action.title).fontWeight(.medium).frame(maxWidth: .infinity)
         }
+        .buttonStyle(.borderedProminent)
         .controlSize(.large)
       }
       Button("Start over") { model.reset() }.buttonStyle(.link).font(.callout)
