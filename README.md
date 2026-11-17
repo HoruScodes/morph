@@ -38,3 +38,9 @@ The video test needs `ffmpeg` at `/opt/homebrew/bin/ffmpeg` and is skipped witho
 - `Sources/ConvertKit` holds the conversion logic. `Action` is the table of what can be done,
   and `convert(_:inputs:progress:)` is the single entry point.
 - `Sources/Morph` is the status item and popover.
+
+## Site and launch video
+
+- `site/` is the static marketing page (open `site/index.html`). Its screenshots are rendered from the app's own views: `swift build && .build/debug/Morph --shots site/images/app`.
+- `video/` renders the launch video: `cd video && pnpm install && node render.mjs` writes `site/video/launch.mp4` and `poster.jpg`. It needs Google Chrome and ffmpeg.
+- `site/download/Morph.zip` is the app the Download buttons serve. Rebuild it with `./scripts/build-app.sh && ditto -c -k --keepParent build/Morph.app site/download/Morph.zip`.

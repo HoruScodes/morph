@@ -16,7 +16,12 @@ final class Model {
   private(set) var phase: Phase = .empty {
     didSet { onMoodChange() }
   }
-  private(set) var greeting = Model.randomGreeting()
+  private(set) var greeting: String
+
+  init(phase: Phase = .empty, greeting: String? = nil) {
+    self.phase = phase
+    self.greeting = greeting ?? Model.randomGreeting()
+  }
   @ObservationIgnored var onMoodChange: () -> Void = {}
 
   var mood: Mood {

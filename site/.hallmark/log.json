@@ -1,0 +1,29 @@
+[
+ {
+  "shape": "Split Studio",
+  "theme": "hum",
+  "axes": "light/rounded-sans/chromatic-yellow",
+  "hero": "Stage",
+  "nav": "slab",
+  "footer": "mast",
+  "imagery": "screenshots 9 rendered from the app, one launch video",
+  "photos": [],
+  "entry": "index.html",
+  "fingerprint": "split-studio/stage/slab/mast",
+  "sections": [
+   "Hero",
+   "Figures",
+   "Switcher",
+   "Split",
+   "Showcase",
+   "Set",
+   "Band",
+   "Footer"
+  ],
+  "signature": "Morph face changing mood in its real screens",
+  "waived": [],
+  "prompt": "marketing site for Morph, a Mac menu bar file converter",
+  "date": "2026-11-17",
+  "mode": "build"
+ }
+]

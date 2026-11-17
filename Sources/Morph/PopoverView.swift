@@ -62,7 +62,7 @@ struct PopoverView: View {
       } else {
         ForEach(files, id: \.self) { url in
           HStack(spacing: 8) {
-            Image(nsImage: NSWorkspace.shared.icon(forFile: url.path)).resizable().frame(width: 22, height: 22)
+            Image(systemName: symbol(for: url)).font(.system(size: 17)).foregroundStyle(.tint).frame(width: 22, height: 22)
             Text(url.lastPathComponent).lineLimit(1).truncationMode(.middle)
           }
         }
@@ -115,6 +115,15 @@ struct PopoverView: View {
       Button("Try again") { model.retry() }.buttonStyle(.borderedProminent).controlSize(.large)
     }
     .frame(maxWidth: .infinity)
+  }
+
+  private func symbol(for url: URL) -> String {
+    switch FileKind(url: url) {
+    case .image: "photo"
+    case .pdf: "doc.text"
+    case .video: "film"
+    case nil: "doc"
+    }
   }
 
   private func readyHeadline(_ count: Int, canHelp: Bool) -> String {
