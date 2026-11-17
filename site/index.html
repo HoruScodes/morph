@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Morph shrinks and converts files on your Mac</title>
+<title>Morph converts files on your Mac</title>
 <meta name="description" content="Morph is a tiny Mac menu bar app with a face. Drop a photo, PDF or video on it and get back a file that opens and sends. Nothing is uploaded.">
 <link rel="icon" href="images/icon-64.png">
 <link rel="preconnect" href="https://api.fontshare.com">
@@ -27,30 +27,58 @@
 <section class="hero" id="top">
   <div class="container">
     <div>
-      <h1>Feed Morph the file that won’t behave.</h1>
-      <p class="lead">A menu bar app that shrinks or converts photos, PDFs and videos.</p>
+      <h1>Convert files on the go</h1>
+      <p class="lead">No more shady sites for converting files. Morph does it on your Mac (no account, no internet).</p>
       <div class="actions">
         <a class="btn btn--primary" href="download/Morph.zip" download>Download for Mac</a>
         <a class="btn" href="#film">Watch it work</a>
       </div>
       <small>Needs macOS 15 or later.</small>
     </div>
-    <div class="stage">
+    <div class="stage demo" data-demo>
       <div class="sheet sheet--mat" aria-hidden="true"><i></i></div>
-      <div class="sheet sheet--strip" aria-hidden="true"><i></i></div>
-      <figure class="shot" data-slot="hero" data-kind="product" data-alt="Morph asking what to do with a photo, with four buttons: Convert to JPG, Convert to PNG, Make smaller, Turn into a PDF"><img src="images/app/photo.png" width="960" height="921" alt="Morph asking what to do with a photo, with four buttons: Convert to JPG, Convert to PNG, Make smaller, Turn into a PDF" fetchpriority="high"></figure>
-      <img class="face" src="images/app/face-hungry.png" width="720" height="720" alt="">
+      <svg class="morph" viewBox="0 0 100 100" role="img" aria-label="Morph logo, the face that lives in your menu bar" data-mood="idle">
+        <path class="morph__body" d="M50 4C80 2 98 22 96 50C94 80 78 96 52 95C22 94 3 80 4 54C5 24 22 6 50 4Z"/>
+        <g class="morph__eyes">
+          <g data-m="idle sad"><ellipse cx="34" cy="42" rx="5.5" ry="7.5"/><ellipse cx="66" cy="42" rx="5.5" ry="7.5"/></g>
+          <g data-m="hungry"><ellipse cx="34" cy="40" rx="7" ry="9.5"/><ellipse cx="66" cy="40" rx="7" ry="9.5"/></g>
+          <g data-m="busy" class="morph__line"><path d="M27 42H41"/><path d="M59 42H73"/></g>
+          <g data-m="happy" class="morph__line"><path d="M27 44Q34 33 41 44"/><path d="M59 44Q66 33 73 44"/></g>
+        </g>
+        <path data-m="idle" class="morph__line" d="M42 63Q50 71 58 63"/>
+        <circle data-m="hungry" cx="50" cy="69" r="11"/>
+        <circle data-m="busy" cx="50" cy="67" r="4.5"/>
+        <path data-m="happy" class="morph__line" d="M36 61Q50 78 64 61"/>
+        <path data-m="sad" class="morph__line" d="M41 70Q50 62 59 70"/>
+      </svg>
+      <div class="tray">
+        <div class="sheet" aria-hidden="true"><i></i></div>
+        <p id="tray-label">Drag one onto Morph</p>
+        <button class="chip" type="button" data-kind="photo" aria-describedby="tray-label">Beach day.heic<small>2.3 MB</small></button>
+        <button class="chip" type="button" data-kind="pdfs" aria-describedby="tray-label">3 PDFs<small>21.3 MB</small></button>
+        <button class="chip" type="button" data-kind="video" aria-describedby="tray-label">Birthday.mov<small>10.6 MB</small></button>
+      </div>
+      <div class="demo__screen">
+        <figure class="shot" data-slot="hero" data-kind="product" data-alt="Morph's window, asking for a file"><img src="images/app/empty.png" width="960" height="714" alt="Morph's window saying Feed me a file" fetchpriority="high"></figure>
+        <div class="demo__hot"></div>
+      </div>
+      <ol class="steps">
+        <li aria-current="step">Drop a file</li>
+        <li>Pick a button</li>
+        <li>Get it back</li>
+      </ol>
+      <p class="visually-hidden" role="status" aria-live="polite"></p>
     </div>
   </div>
 </section>
 
-<section class="facts" id="facts">
+<section class="facts" id="facts" aria-label="Morph in four facts">
   <div class="container">
     <div class="inner">
       <div class="sheet" aria-hidden="true"><i></i></div>
-      <h2>Small on purpose.</h2>
       <dl>
         <div><dt class="num">1.2<span> MB</span></dt><dd>The whole app, lighter than one phone photo.</dd></div>
+        <div><dt>Swift</dt><dd>Native Mac code, with no web browser hiding inside.</dd></div>
         <div><dt class="num">8</dt><dd>Jobs it knows, one button each.</dd></div>
         <div><dt class="num">0</dt><dd>Accounts to make or passwords to remember.</dd></div>
       </dl>

@@ -35,6 +35,23 @@ enum Shots {
         .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
       write(view, to: directory.appendingPathComponent("\(name).png"))
     }
+    let measured: [(Action, [URL], Int64, Int64, Int)] = [
+      (.imageToJPG, photo, 2_340_000, 3_272_910, 1), (.imageToPNG, photo, 2_340_000, 24_293_215, 1),
+      (.shrinkImage, photo, 2_340_000, 444_375, 1), (.imagesToPDF, photo, 2_340_000, 3_347_558, 1),
+      (.shrinkPDF, pdfs, 21_293_316, 2_936_664, 3), (.mergePDFs, pdfs, 21_293_316, 7_099_450, 1),
+      (.pdfToJPG, pdfs, 21_293_316, 846_588, 6), (.shrinkVideo, video, 10_576_793, 4_279_365, 1),
+    ]
+    for (action, inputs, before, after, count) in measured {
+      let outputs = Array(repeating: inputs[0], count: count)
+      let result = ConversionResult(outputs: outputs, inputBytes: before, outputBytes: after)
+      for (prefix, phase) in [("working", Phase.working(action, progress: 0.62)), ("done", .done(result))] {
+        let view = PopoverView(model: Model(phase: phase))
+          .environment(\.controlActiveState, .key)
+          .background(Color(nsColor: .windowBackgroundColor))
+          .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+        write(view, to: directory.appendingPathComponent("\(prefix)-\(action.rawValue).png"))
+      }
+    }
     for (name, mood) in [("idle", Mood.idle), ("hungry", .hungry), ("busy", .busy), ("happy", .happy), ("sad", .sad)] {
       write(Image(nsImage: Mascot.image(mood, side: 240)), to: directory.appendingPathComponent("face-\(name).png"))
       let menuBar = Image(nsImage: Mascot.image(mood, side: 240, body: CGColor(gray: 1, alpha: 1)))
