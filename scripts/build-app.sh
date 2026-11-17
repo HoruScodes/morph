@@ -7,8 +7,9 @@ binary="$(swift build -c release --show-bin-path)/DropConvert"
 
 app="build/DropConvert.app"
 rm -rf "$app"
-mkdir -p "$app/Contents/MacOS"
+mkdir -p "$app/Contents/MacOS" "$app/Contents/Resources"
 cp "$binary" "$app/Contents/MacOS/DropConvert"
+cp Resources/AppIcon.icns "$app/Contents/Resources/AppIcon.icns"
 
 cat > "$app/Contents/Info.plist" <<'PLIST'
 <?xml version="1.0" encoding="UTF-8"?>
@@ -16,6 +17,7 @@ cat > "$app/Contents/Info.plist" <<'PLIST'
 <plist version="1.0">
 <dict>
   <key>CFBundleExecutable</key><string>DropConvert</string>
+  <key>CFBundleIconFile</key><string>AppIcon</string>
   <key>CFBundleIdentifier</key><string>com.dropconvert.app</string>
   <key>CFBundleName</key><string>DropConvert</string>
   <key>CFBundlePackageType</key><string>APPL</string>

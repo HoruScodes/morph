@@ -1,6 +1,7 @@
 import AppKit
 import ConvertKit
 import Observation
+import ServiceManagement
 
 enum Phase {
   case empty
@@ -13,7 +14,13 @@ enum Phase {
 @Observable
 final class Model {
   private(set) var phase: Phase = .empty
+  private(set) var opensAtLogin = SMAppService.mainApp.status == .enabled
   private var files: [URL] = []
+
+  func setOpensAtLogin(_ on: Bool) {
+    if on { try? SMAppService.mainApp.register() } else { try? SMAppService.mainApp.unregister() }
+    opensAtLogin = SMAppService.mainApp.status == .enabled
+  }
 
   func load(_ urls: [URL]) {
     if case .working = phase { return }

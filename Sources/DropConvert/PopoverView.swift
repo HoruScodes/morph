@@ -8,11 +8,14 @@ struct PopoverView: View {
   var body: some View {
     VStack(spacing: 14) {
       content
-      Button("Quit DropConvert") { NSApp.terminate(nil) }
-        .buttonStyle(.plain)
-        .font(.caption)
-        .foregroundStyle(.secondary)
-        .frame(maxWidth: .infinity, alignment: .trailing)
+      HStack {
+        Toggle("Open at login", isOn: Binding(get: { model.opensAtLogin }, set: { model.setOpensAtLogin($0) }))
+          .toggleStyle(.checkbox)
+        Spacer()
+        Button("Quit DropConvert") { NSApp.terminate(nil) }.buttonStyle(.plain)
+      }
+      .font(.caption)
+      .foregroundStyle(.secondary)
     }
     .padding(16)
     .frame(width: 320)
