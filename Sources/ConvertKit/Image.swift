@@ -1,6 +1,7 @@
 import CoreGraphics
 import Foundation
 import ImageIO
+import PDFKit
 import UniformTypeIdentifiers
 
 nonisolated struct ImageRecipe {
@@ -78,6 +79,7 @@ nonisolated func convertImages(
     }
     let target = outputs.next(stem: stem(of: url) + recipe.suffix, ext: recipe.ext)
     try writeImage(image, to: target, type: recipe.type, quality: recipe.quality, name: name)
+    if recipe.maxPixel != nil { outputs.keepLastOnlyIfSmaller(than: url) }
     progress(Double(index + 1) / Double(inputs.count))
   }
 }
@@ -86,17 +88,20 @@ nonisolated func imagesToPDF(
   _ inputs: [URL], into outputs: inout OutputSet, progress: @Sendable (Double) -> Void
 ) throws(ConversionError) {
   let first = inputs[0]
-  let target = outputs.next(stem: stem(of: first) + (inputs.count > 1 ? " combined" : ""), ext: "pdf")
-  guard let context = CGContext(target as CFURL, mediaBox: nil, nil) else {
-    throw .failed(first.lastPathComponent)
-  }
+  let document = PDFDocument()
   for (index, url) in inputs.enumerated() {
     let image = try loadImage(url, maxPixel: nil)
-    var box = CGRect(x: 0, y: 0, width: image.width, height: image.height)
-    context.beginPage(mediaBox: &box)
-    context.draw(image, in: box)
-    context.endPage()
+    let scale = min(1, 842 / Double(max(image.width, image.height)))
+    let size = NSSize(width: Double(image.width) * scale, height: Double(image.height) * scale)
+    guard let page = PDFPage(image: NSImage(cgImage: image, size: size)) else {
+      throw .failed(url.lastPathComponent)
+    }
+    document.insert(page, at: document.pageCount)
     progress(Double(index + 1) / Double(inputs.count))
   }
-  context.closePDF()
+  let target = outputs.next(stem: stem(of: first) + (inputs.count > 1 ? " combined" : ""), ext: "pdf")
+  // Without this PDFKit stores every photo uncompressed, about eight times the size of the JPEG.
+  guard document.write(to: target, withOptions: [.saveImagesAsJPEGOption: true]) else {
+    throw .failed(first.lastPathComponent)
+  }
 }

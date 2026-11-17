@@ -30,7 +30,7 @@ nonisolated func shrinkPDFs(
       .optimizeImagesForScreenOption: true,
     ]
     guard rebuilt.write(to: target, withOptions: options) else { throw .failed(name) }
-    guard fileSize(target) < fileSize(url) else { throw .alreadySmall(name) }
+    outputs.keepLastOnlyIfSmaller(than: url)
     progress(Double(index + 1) / Double(inputs.count))
   }
 }

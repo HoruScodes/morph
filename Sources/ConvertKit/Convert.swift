@@ -20,6 +20,7 @@ public nonisolated struct ConversionResult: Sendable {
 nonisolated struct OutputSet {
   let directory: URL
   private(set) var urls: [URL] = []
+  private(set) var skippedBytes: Int64 = 0
 
   init(directory: URL) { self.directory = directory }
 
@@ -33,6 +34,13 @@ nonisolated struct OutputSet {
     }
     urls.append(candidate)
     return candidate
+  }
+
+  mutating func keepLastOnlyIfSmaller(than source: URL) {
+    guard let last = urls.last, fileSize(last) >= fileSize(source) else { return }
+    try? FileManager.default.removeItem(at: last)
+    urls.removeLast()
+    skippedBytes += fileSize(source)
   }
 
   func removeAll() {
@@ -78,10 +86,11 @@ public func convert(
     throw error
   }
 
+  guard !outputs.urls.isEmpty else { throw .alreadySmall(first.lastPathComponent) }
   progress(1)
   return ConversionResult(
     outputs: outputs.urls,
-    inputBytes: inputs.reduce(0) { $0 + fileSize($1) },
+    inputBytes: inputs.reduce(0) { $0 + fileSize($1) } - outputs.skippedBytes,
     outputBytes: outputs.urls.reduce(0) { $0 + fileSize($1) }
   )
 }

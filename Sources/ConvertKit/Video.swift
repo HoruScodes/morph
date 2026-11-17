@@ -23,6 +23,7 @@ nonisolated func shrinkVideos(
       }
     }
     do { try await finished } catch { throw .failed(name) }
+    outputs.keepLastOnlyIfSmaller(than: url)
     progress(Double(index + 1) / Double(inputs.count))
   }
 }

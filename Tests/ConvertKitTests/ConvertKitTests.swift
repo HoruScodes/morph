@@ -68,18 +68,35 @@ struct KindsCase: CustomTestStringConvertible, Sendable {
     }
   }
 
-  @Test(arguments: [(4000, 3000, 2000, 1500, true), (800, 600, 800, 600, false)])
-  func shrinkCapsLongestSideWithoutUpscaling(
-    width: Int, height: Int, expectedWidth: Int, expectedHeight: Int, expectSmallerFile: Bool
-  ) async throws {
+  @Test func shrinkCapsLongestSideAndIsSmaller() async throws {
     try await withSandbox { directory in
-      let png = try makePNG(in: directory, width: width, height: height)
+      let png = try makePNG(in: directory, width: 4000, height: 3000)
       let result = try await convert(.shrinkImage, inputs: [png], progress: { _ in })
       let output = try firstOutput(result)
       let info = try loadInfo(output)
       #expect(output.lastPathComponent == "photo (small).jpg")
-      #expect(info.width == expectedWidth && info.height == expectedHeight)
-      if expectSmallerFile { #expect(result.outputBytes < result.inputBytes) }
+      #expect(info.width == 2000 && info.height == 1500)
+      #expect(result.outputBytes < result.inputBytes)
+    }
+  }
+
+  @Test func shrinkRefusesWhenTheResultWouldBeBigger() async throws {
+    try await withSandbox { directory in
+      let png = try makePNG(in: directory, width: 800, height: 600)
+      await #expect(throws: ConversionError.alreadySmall("photo.png")) {
+        try await convert(.shrinkImage, inputs: [png], progress: { _ in })
+      }
+      #expect(try FileManager.default.contentsOfDirectory(atPath: directory.path) == ["photo.png"])
+    }
+  }
+
+  @Test func batchShrinkSkipsFilesThatWouldGrow() async throws {
+    try await withSandbox { directory in
+      let big = try makePNG(in: directory, name: "big", width: 4000, height: 3000)
+      let tiny = try makePNG(in: directory, name: "tiny", width: 800, height: 600)
+      let result = try await convert(.shrinkImage, inputs: [big, tiny], progress: { _ in })
+      #expect(result.outputs.map(\.lastPathComponent) == ["big (small).jpg"])
+      #expect(result.inputBytes == Int64(try Data(contentsOf: big).count))
     }
   }
 
