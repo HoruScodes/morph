@@ -98,12 +98,42 @@ document.querySelectorAll('[data-demo]').forEach((demo) => {
     k.actions.forEach(([action]) => { new Image().src = `${dir}working-${action}.png`; new Image().src = `${dir}done-${action}.png`; });
   };
 
+  let eating = false;
+  const eat = (chip, kind, from) => {
+    if (eating) return;
+    if (still) { chip.style.translate = ''; feed(kind); return; }
+    eating = true;
+    clearTimeout(timer);
+    hot.replaceChildren();
+    const c = chip.getBoundingClientRect(), f = face.getBoundingClientRect();
+    const dx = from.x + (f.left + f.width / 2) - (c.left + c.width / 2);
+    const dy = from.y + (f.top + f.height * 0.68) - (c.top + c.height / 2);
+    face.dataset.mood = 'hungry';
+    chip.classList.add('is-eaten');
+    chip.style.translate = `${dx}px ${dy}px`;
+    chip.style.scale = '0.12';
+    chip.style.opacity = '0';
+    status.textContent = `Morph is eating ${kinds[kind].name}.`;
+    setTimeout(() => { face.dataset.mood = 'chew'; }, 340);
+    setTimeout(() => {
+      chip.classList.remove('is-eaten');
+      chip.style.transition = 'none';
+      chip.style.translate = '';
+      chip.style.scale = '';
+      void chip.offsetWidth;
+      chip.style.transition = '';
+      chip.style.opacity = '';
+      eating = false;
+      feed(kind);
+    }, 1020);
+  };
+
   const over = (x, y) => {
     const a = face.getBoundingClientRect(), b = img.getBoundingClientRect();
     return x > Math.min(a.left, b.left) - 24 && x < Math.max(a.right, b.right) + 24 && y > a.top - 24 && y < b.bottom + 24;
   };
   demo.querySelectorAll('.chip').forEach((chip) => {
-    let start = null, dragged = false, resting = 'idle';
+    let start = null, dragged = false, resting = 'idle', at = { x: 0, y: 0 };
     chip.addEventListener('pointerdown', (e) => { start = { x: e.clientX, y: e.clientY }; dragged = false; resting = mood; chip.setPointerCapture(e.pointerId); });
     chip.addEventListener('pointermove', (e) => {
       if (!start) return;
@@ -111,6 +141,7 @@ document.querySelectorAll('[data-demo]').forEach((demo) => {
       if (!dragged && Math.hypot(dx, dy) < 6) return;
       dragged = true;
       chip.classList.add('is-dragging');
+      at = { x: dx, y: dy };
       chip.style.translate = `${dx}px ${dy}px`;
       face.dataset.mood = over(e.clientX, e.clientY) ? 'hungry' : resting;
     });
@@ -119,12 +150,13 @@ document.querySelectorAll('[data-demo]').forEach((demo) => {
       const hit = dragged && over(e.clientX, e.clientY);
       start = null;
       chip.classList.remove('is-dragging');
+      if (hit) { eat(chip, chip.dataset.kind, at); return; }
       chip.style.translate = '';
-      if (hit) feed(chip.dataset.kind); else if (dragged) face.dataset.mood = resting;
+      if (dragged) face.dataset.mood = resting;
     };
     chip.addEventListener('pointerup', drop);
     chip.addEventListener('pointercancel', drop);
-    chip.addEventListener('click', () => { if (dragged) { dragged = false; return; } feed(chip.dataset.kind); });
+    chip.addEventListener('click', () => { if (dragged) { dragged = false; return; } eat(chip, chip.dataset.kind, { x: 0, y: 0 }); });
   });
 
   if (!still) {
