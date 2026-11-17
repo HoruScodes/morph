@@ -156,7 +156,13 @@ html:not(.js) [data-loop-toggle] { display: none; }
 .close .lead { margin-top: var(--space-lg); color: color-mix(in oklab, var(--color-paper) 82%, var(--color-ink)); }
 .close small { display: block; margin-top: var(--space-lg); color: color-mix(in oklab, var(--color-paper) 70%, var(--color-ink)); }
 .close .btn:focus-visible { outline-color: var(--color-accent); }
-.close .shot { width: min(100%, 440px); justify-self: center; rotate: 2deg; }
+.first-open { position: relative; justify-self: center; width: min(100%, 520px); padding: var(--space-2xl) var(--space-xl); color: var(--color-ink); rotate: 1.5deg; }
+.first-open .sheet { --sheet-c: var(--color-card); inset: 0; }
+.first-open h3, .first-open ol, .first-open p { position: relative; }
+.first-open ol { display: grid; gap: var(--space-lg); margin: var(--space-lg) 0 0; padding: 0; list-style: none; counter-reset: open; }
+.first-open li { display: grid; grid-template-columns: 2.25rem minmax(0, 1fr); align-items: baseline; counter-increment: open; line-height: 1.4; }
+.first-open li::before { content: counter(open); font-weight: 600; font-size: var(--text-title); line-height: 1; font-variant-numeric: tabular-nums; }
+.first-open p { margin-top: var(--space-lg); padding-left: 2.25rem; font-size: var(--text-sm); color: var(--color-muted); }
 
 .foot { padding-block: var(--section-gap-s) var(--space-2xl); }
 .foot .mast { display: flex; align-items: center; gap: var(--space-lg); font-weight: 600; font-size: clamp(5rem, 15vw, 13rem); line-height: 0.9; letter-spacing: -0.04em; }
