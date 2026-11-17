@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Morph, the menu bar app that shrinks and converts files</title>
-<meta name="description" content="Morph is a tiny Mac menu bar app. Drop a photo, a PDF or a video on its face and it converts or shrinks it on your Mac.">
+<title>Morph shrinks and converts files on your Mac</title>
+<meta name="description" content="Morph is a tiny Mac menu bar app with a face. Drop a photo, PDF or video on it and get back a file that opens and sends. Nothing is uploaded.">
 <link rel="icon" href="images/icon-64.png">
 <link rel="preconnect" href="https://api.fontshare.com">
 <link href="https://api.fontshare.com/v2/css?f[]=chillax@500,600&display=swap" rel="stylesheet">
@@ -27,13 +27,13 @@
 <section class="hero" id="top">
   <div class="container">
     <div>
-      <h1>Feed Morph a file.</h1>
-      <p class="lead">A menu bar app that shrinks and converts photos, PDFs and videos.</p>
+      <h1>Feed Morph the file that won’t behave.</h1>
+      <p class="lead">A menu bar app that shrinks or converts it on your Mac.</p>
       <div class="actions">
         <a class="btn btn--primary" href="download/Morph.zip" download>Download for Mac</a>
         <a class="btn" href="#film">Watch it work</a>
       </div>
-      <small>For macOS 15 or later.</small>
+      <small>Needs macOS 15 or later.</small>
     </div>
     <div class="stage">
       <div class="sheet sheet--mat" aria-hidden="true"><i></i></div>
@@ -50,9 +50,9 @@
       <div class="sheet" aria-hidden="true"><i></i></div>
       <h2>Small on purpose.</h2>
       <dl>
-        <div><dt class="num">1.2<span> MB</span></dt><dd>The whole app, smaller than one phone photo.</dd></div>
-        <div><dt class="num">8</dt><dd>Jobs it knows, each one a single button.</dd></div>
-        <div><dt class="num">0</dt><dd>Files sent anywhere. Morph has no internet code.</dd></div>
+        <div><dt class="num">1.2<span> MB</span></dt><dd>The whole app, lighter than one phone photo.</dd></div>
+        <div><dt class="num">8</dt><dd>Jobs it knows, one button each.</dd></div>
+        <div><dt class="num">0</dt><dd>Accounts to make or passwords to remember.</dd></div>
       </dl>
     </div>
   </div>
@@ -60,7 +60,7 @@
 
 <section class="jobs" id="jobs">
   <div class="container" data-switch>
-    <h2>Drop it, pick a button.</h2>
+    <h2>Drop a file, pick a button.</h2>
     <div class="seg" role="tablist" aria-label="Kind of file">
       <button type="button" role="tab" aria-selected="true" aria-controls="p-photo" id="t-photo">A photo</button>
       <button type="button" role="tab" aria-selected="false" aria-controls="p-pdf" id="t-pdf" tabindex="-1">Some PDFs</button>
@@ -68,16 +68,16 @@
     </div>
     <div class="panel" role="tabpanel" id="p-photo" aria-labelledby="t-photo">
       <div>
-        <h3>The phone photo nobody can open.</h3>
-        <p class="lead">A HEIC becomes a JPG that opens anywhere.</p>
+        <h3>The phone photo a PC won’t open.</h3>
+        <p class="lead">Morph turns it into a JPG, the kind every computer opens.</p>
         <div class="tiles"><div class="sheet" aria-hidden="true"><i></i></div><ul><li>Convert to JPG</li><li>Convert to PNG</li><li>Make smaller</li><li>Turn into a PDF</li></ul></div>
       </div>
       <figure class="shot" data-slot="jobs-photo" data-kind="product" data-alt="Morph with one photo dropped and four buttons"><img src="images/app/photo.png" width="960" height="921" alt="Morph with one photo dropped and four buttons" loading="lazy"></figure>
     </div>
     <div class="panel" role="tabpanel" id="p-pdf" aria-labelledby="t-pdf" hidden>
       <div>
-        <h3>The scan too big to send.</h3>
-        <p class="lead">Shrink it, or staple three into one. The text stays selectable.</p>
+        <h3>The scan too big to upload.</h3>
+        <p class="lead">Shrink it and you can still copy the words. Or staple a few into one.</p>
         <div class="tiles"><div class="sheet" aria-hidden="true"><i></i></div><ul><li>Make smaller</li><li>Combine into one PDF</li><li>Save pages as JPG</li></ul></div>
       </div>
       <figure class="shot" data-slot="jobs-pdf" data-kind="product" data-alt="Morph with three PDFs dropped and three buttons"><img src="images/app/pdfs.png" width="960" height="999" alt="Morph with three PDFs dropped and three buttons" loading="lazy"></figure>
@@ -85,7 +85,7 @@
     <div class="panel" role="tabpanel" id="p-video" aria-labelledby="t-video" hidden>
       <div>
         <h3>The clip your email refuses.</h3>
-        <p class="lead">It comes back as a 720p MP4 you can attach.</p>
+        <p class="lead">It comes back as a lighter 720p copy, ready for another try.</p>
         <div class="tiles"><div class="sheet" aria-hidden="true"><i></i></div><ul><li>Make smaller</li></ul></div>
       </div>
       <figure class="shot" data-slot="jobs-video" data-kind="product" data-alt="Morph with one video dropped and a Make smaller button"><img src="images/app/video.png" width="960" height="579" alt="Morph with one video dropped and a Make smaller button" loading="lazy"></figure>
@@ -97,7 +97,7 @@
   <div class="container">
     <div>
       <h2>3.9 MB in, 424 KB out.</h2>
-      <p class="lead">One 12-megapixel test photo. Morph saved <mark>the small copy</mark> beside the original and left the original alone.</p>
+      <p class="lead">That was one 12-megapixel test photo. The <mark>new copy</mark> landed next to the original, which Morph never touches.</p>
     </div>
     <div class="visual">
       <div class="sheet" aria-hidden="true"><i></i></div>
@@ -111,7 +111,7 @@
   <div class="container">
     <div class="head">
       <h2>Watch Morph eat.</h2>
-      <p class="lead">Twenty seconds, start to finish.</p>
+      <p class="lead">Twenty seconds from drop to done.</p>
     </div>
     <figure class="reel" data-loop>
       <video src="video/launch.mp4" poster="video/poster.jpg" width="1920" height="1080" muted loop playsinline preload="none" aria-label="Morph's launch video: a photo is dropped on the menu bar face, shrunk and saved"></video>
@@ -124,11 +124,11 @@
   <div class="container">
     <h2>It has feelings about files.</h2>
     <ul>
-      <li><img src="images/app/face-idle.png" width="720" height="720" alt="" loading="lazy"><div><b>Waiting</b><span>How it sits in your menu bar.</span></div></li>
-      <li><img src="images/app/face-hungry.png" width="720" height="720" alt="" loading="lazy"><div><b>Hungry</b><span>A file is hovering.</span></div></li>
-      <li><img src="images/app/face-busy.png" width="720" height="720" alt="" loading="lazy"><div><b>Chewing</b><span>Work in progress.</span></div></li>
-      <li><img src="images/app/face-happy.png" width="720" height="720" alt="" loading="lazy"><div><b>Proud</b><span>Saved next to the original.</span></div></li>
-      <li><img src="images/app/face-sad.png" width="720" height="720" alt="" loading="lazy"><div><b>Sorry</b><span>That file would not open.</span></div></li>
+      <li><img src="images/app/face-idle.png" width="720" height="720" alt="" loading="lazy"><div><b>Waiting</b><span>Sitting quietly in your menu bar.</span></div></li>
+      <li><img src="images/app/face-hungry.png" width="720" height="720" alt="" loading="lazy"><div><b>Hungry</b><span>A file is hovering over it.</span></div></li>
+      <li><img src="images/app/face-busy.png" width="720" height="720" alt="" loading="lazy"><div><b>Chewing</b><span>Working on your file.</span></div></li>
+      <li><img src="images/app/face-happy.png" width="720" height="720" alt="" loading="lazy"><div><b>Proud</b><span>Your new file is ready.</span></div></li>
+      <li><img src="images/app/face-sad.png" width="720" height="720" alt="" loading="lazy"><div><b>Sorry</b><span>It tells you what went wrong.</span></div></li>
     </ul>
   </div>
 </section>
@@ -137,7 +137,7 @@
   <div class="container">
     <div>
       <h2>Nothing leaves your Mac.</h2>
-      <p class="lead">No account, no upload, no waiting on a website.</p>
+      <p class="lead">There’s no internet code inside, so your files stay right here.</p>
       <div class="actions"><a class="btn btn--primary" href="download/Morph.zip" download>Download for Mac</a></div>
     </div>
     <figure class="shot" data-slot="close" data-kind="product" data-alt="Morph saying Feed me a file, with a Choose files button"><img src="images/app/empty.png" width="960" height="713" alt="Morph saying Feed me a file, with a Choose files button" loading="lazy"></figure>
